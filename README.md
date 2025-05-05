@@ -16,3 +16,5 @@ carpeta codes con los archivos prepare_emails.zip y send_emails.zip --> que son 
 lso recursos se definen  crean e archivos individuales para mantener una mejor practica de manejo del codigo.
 
 el proyecto en su estado actual logra desplegar el envio de correos a personas autenticadas,  por ser una cuenta con restricciones el emisor de correo debe de ser validado manualmente.
+
+NOTA: el proyecto se hizo nuevamente en un nuevo repositorio por problemas en la implementacion del github que daba error al momento del push, no subia los arhivos al repositorio, razon por l cual tube que implementar de urgencia el nuevo repositorio para ejecucion y demostracion del proyecto.
