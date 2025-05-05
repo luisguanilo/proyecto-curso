@@ -1,0 +1,6 @@
+aws_region            = "us-east-1"
+profile               = "proyecto_quintana"
+email_templates_bucket = "email-templates-quintana"
+clients_table_name    = "clients"
+sender_email          = "guanilo99@gmail.com"
+sqs_queue_name        = "email-queue"

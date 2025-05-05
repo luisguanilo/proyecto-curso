@@ -1,0 +1,6 @@
+# Ignorar la carpeta .terraform
+.terraform/
+
+# Ignora archivos de estado
+*.tfstate
+*.tfstate.*
