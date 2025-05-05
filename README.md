@@ -12,3 +12,7 @@ variables.tf  --> se definen las variables tanto globales como especificas
 outputs.tf  --> salidas de la infraestructura 
 carpeta templates, con archivos index.html y el archivo styles.css  --> es el archivo de plantilla html y css
 carpeta codes con los archivos prepare_emails.zip y send_emails.zip --> que son los codigos de lqas funciones lambda empaquetdos
+
+lso recursos se definen  crean e archivos individuales para mantener una mejor practica de manejo del codigo.
+
+el proyecto en su estado actual logra desplegar el envio de correos a personas autenticadas,  por ser una cuenta con restricciones el emisor de correo debe de ser validado manualmente.
