@@ -47,17 +47,10 @@ resource "aws_iam_role_policy" "cloudwatch_export_policy" {
   })
 }
 
+# añadido para exportar los logs al s3
 resource "null_resource" "export_logs" {
   provisioner "local-exec" {
-    command = <<EOT
-    aws logs create-export-task \
-      --log-group-name /aws/lambda/prepare_emails \
-      --from $(date -u -d '1 hour ago' +%s)000 \
-      --to $(date -u +%s)000 \
-      --destination ${aws_s3_bucket.logs_bucket.id} \
-      --destination-prefix exported-logs/prepare \
-      --role-name cloudwatch_logs_export_role
-    EOT
+    command = "cmd /C powershell -Command \"& { C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe logs create-export-task --log-group-name /aws/lambda/prepare_emails --from (Get-Date).AddHours(-1).ToUniversalTime().ToFileTime() / 10000 --to (Get-Date).ToUniversalTime().ToFileTime() / 10000 --destination 'quintana-lambda-logs' --destination-prefix 'exported-logs/prepare' --role-name 'cloudwatch_logs_export_role' }\""
   }
 
   depends_on = [aws_iam_role.cloudwatch_to_s3, aws_s3_bucket.logs_bucket]

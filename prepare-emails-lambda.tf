@@ -56,6 +56,19 @@ data "aws_iam_policy_document" "lambda_prepare_emails_policy" {
       aws_sqs_queue.email_queue.arn
     ]
   }
+
+  #añadido para politica en cloudwatch
+  statement {
+    sid    = "CloudWatchLogs"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
+
 }
 
 resource "aws_iam_role_policy" "lambda_prepare_emails_policy_attach" {

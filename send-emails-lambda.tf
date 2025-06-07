@@ -44,6 +44,18 @@ data "aws_iam_policy_document" "lambda_send_emails_policy" {
       values   = [var.sender_email]
     }
   }
+
+  # añadir politicas para cloudwatch
+  statement {
+    sid    = "CloudWatchLogs"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role_policy" "lambda_send_emails_policy_attach" {
