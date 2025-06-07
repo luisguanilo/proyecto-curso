@@ -1,6 +1,26 @@
 import json
 import boto3
 import os
+import logging # añadido por logs
+
+# Configuración básica de logs
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+def log_structured(level, message, context=None, extra=None):
+    log_entry = {
+        "level": level,
+        "message": message,
+        "function": "send_emails",
+        "context": {
+            "request_id": context.aws_request_id if context else None
+        }
+    }
+    if extra:
+        log_entry.update(extra)
+    logger.info(json.dumps(log_entry))
+# codigo siguiente de primera unidad
+
 
 # Clientes de AWS
 ses = boto3.client('ses')
@@ -26,6 +46,7 @@ def lambda_handler(event, context):
 
         if not client_email:
             print(f"Missing email for client {client_name}. Skipping.")
+            log_structured("WARNING", "Cliente sin correo. No se envió el email.", context, {"client_name": client_name}) # Añadido por logs
             continue
         
         # Crear el contenido del correo electrónico con el HTML y CSS
@@ -52,9 +73,13 @@ def lambda_handler(event, context):
                     },
                     'Body': {
                         'Html': {
-                            'Data': email_body
+                            'Data': email_body}}
                         }
-                    }
+            )
+            log_structured("INFO", "Correo enviado exitosamente", context, { # añadido de logs
+                "client_name": client_name, # añadido de logs
+                "client_email": client_email # añadido de logs
+
                 }
             )
 
@@ -65,7 +90,9 @@ def lambda_handler(event, context):
             # )
 
         except Exception as e:
-            #print(f"Error sending email to {client_email}: {str(e)}") # Para cloudwatch
+            log_structured("ERROR", "Error al enviar correo", context, {
+                "client_email": client_email,
+                "exception": str(e)}) # añadido por logs
             continue
 
     return {
