@@ -45,3 +45,27 @@ resource "aws_dynamodb_table_item" "other_client" {
 }
 ITEM
 }
+
+resource "aws_dynamodb_table_item" "other_client1" {
+  table_name = aws_dynamodb_table.clients.name
+  hash_key   = aws_dynamodb_table.clients.hash_key
+
+  item = <<ITEM
+{
+  "client_name": {"S": "otro cliente1"},
+  "email": {"S": "lordalex.hr@gmail.com"} 
+}
+ITEM
+}
+
+resource "aws_dynamodb_table_item" "other_client2" {
+  table_name = aws_dynamodb_table.clients.name
+  hash_key   = aws_dynamodb_table.clients.hash_key
+
+  item = <<ITEM
+{
+  "client_name": {"S": "otro cliente2"},
+  "email": {"S": "lcarranzal1@upao.edu.pe"} 
+}
+ITEM
+}
