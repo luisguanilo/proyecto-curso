@@ -24,3 +24,5 @@ NOTA: el proyecto se hizo nuevamente en un nuevo repositorio por problemas en la
 
 
 Luis Guanilo Esteves
+
+# **Desarrollo de Logs para el proyecto**
