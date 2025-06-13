@@ -48,10 +48,27 @@ resource "aws_iam_role_policy" "cloudwatch_export_policy" {
 }
 
 # añadido para exportar los logs al s3
+#resource "null_resource" "export_logs" {
+  #provisioner "local-exec" {
+    #command = "cmd /C powershell -Command \"& { C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe logs create-export-task --log-group-name /aws/lambda/prepare_emails --from (Get-Date).AddHours(-1).ToUniversalTime().ToFileTime() / 10000 --to (Get-Date).ToUniversalTime().ToFileTime() / 10000 --destination 'quintana-lambda-logs' --destination-prefix 'exported-logs/prepare' --role-name 'cloudwatch_logs_export_role' }\""
+  #}
+
+  #depends_on = [aws_iam_role.cloudwatch_to_s3, aws_s3_bucket.logs_bucket]
+#}
+
+
+# añadido posteriormente
 resource "null_resource" "export_logs" {
   provisioner "local-exec" {
-    command = "cmd /C powershell -Command \"& { C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe logs create-export-task --log-group-name /aws/lambda/prepare_emails --from (Get-Date).AddHours(-1).ToUniversalTime().ToFileTime() / 10000 --to (Get-Date).ToUniversalTime().ToFileTime() / 10000 --destination 'quintana-lambda-logs' --destination-prefix 'exported-logs/prepare' --role-name 'cloudwatch_logs_export_role' }\""
+    command = <<-EOT
+      powershell -Command "\$from = [int]([System.DateTime]::UtcNow.AddHours(-1) - [System.DateTime]::UnixEpoch).TotalSeconds * 1000; 
+      \$to = [int]([System.DateTime]::UtcNow - [System.DateTime]::UnixEpoch).TotalSeconds * 1000;
+      & 'C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe' logs create-export-task --log-group-name /aws/lambda/prepare_emails --from \$from --to \$to --destination 'quintana-lambda-logs' --destination-prefix 'exported-logs/prepare' --role-arn 'arn:aws:iam::322957919239:role/cloudwatch_logs_export_role'"
+    EOT
   }
 
-  depends_on = [aws_iam_role.cloudwatch_to_s3, aws_s3_bucket.logs_bucket]
+  depends_on = [
+    aws_iam_role.cloudwatch_to_s3,
+    aws_s3_bucket.logs_bucket
+  ]
 }
