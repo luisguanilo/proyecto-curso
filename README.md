@@ -107,12 +107,6 @@ El panel utiliza datos de CloudWatch Metrics en la dimensión `AWS/Lambda > Invo
 
 Para facilitar el despliegue, se dockerizó la ejecución de Terraform dentro de un contenedor oficial, usando Docker Compose.
 
-### Requisitos previos
-
-- Docker Desktop instalado en tu máquina.
-- AWS CLI v2 instalado y configurado.
-- Perfil AWS llamado `proyecto_quintana` configurado en `~/.aws/credentials`.
-
 ### Configuración importante
 
 - El archivo `docker-compose.yml` monta el directorio del proyecto dentro del contenedor.
