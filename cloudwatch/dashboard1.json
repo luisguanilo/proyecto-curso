@@ -1,0 +1,496 @@
+{
+    "widgets": [
+        {
+            "height": 6,
+            "width": 12,
+            "y": 0,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "gauge",
+                "metrics": [
+                    [ "AWS/ApiGateway", "IntegrationLatency", "ApiName", "quintana-gateway", { "region": "us-east-1" } ],
+                    [ ".", "Latency", ".", ".", { "region": "us-east-1" } ],
+                    [ ".", "Count", ".", ".", { "region": "us-east-1" } ]
+                ],
+                "region": "us-east-1",
+                "yAxis": {
+                    "left": {
+                        "min": 1,
+                        "max": 1000
+                    }
+                },
+                "period": 300,
+                "title": "Métricas de Desempeño: Latencia e Integración en API Gateway"
+            }
+        },
+        {
+            "height": 6,
+            "width": 5,
+            "y": 16,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "view": "pie",
+                "metrics": [
+                    [ "AWS/Lambda", "Duration", "FunctionName", "prepare_emails", "Resource", "prepare_emails", { "region": "us-east-1" } ],
+                    [ "...", "send-emails", ".", "send-emails", { "region": "us-east-1" } ]
+                ],
+                "region": "us-east-1",
+                "stacked": true,
+                "setPeriodToTimeRange": true,
+                "title": "Duración de Ejecuciones de Lambda 'prepare_emails' y 'send-emails",
+                "period": 300
+            }
+        },
+        {
+            "height": 6,
+            "width": 4,
+            "y": 16,
+            "x": 10,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/lambda/prepare_emails' | fields @timestamp, @message, @logStream, @log\n| sort @timestamp desc\n| stats count() by bin(30s)",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "Monitoreo de Logs: Lambda 'prepare_emails' por Intervalo de 30s",
+                "view": "bar"
+            }
+        },
+        {
+            "height": 6,
+            "width": 5,
+            "y": 16,
+            "x": 5,
+            "type": "log",
+            "properties": {
+                "query": "SOURCE '/aws/lambda/send-emails' | fields @timestamp, @message, @logStream, @log\n| sort @timestamp desc\n| stats count() by bin(30s)",
+                "region": "us-east-1",
+                "stacked": false,
+                "title": "Frecuencia de Registros de Lambda 'send-emails' por Intervalo de 30 Segundos",
+                "view": "bar"
+            }
+        },
+        {
+            "height": 5,
+            "width": 10,
+            "y": 6,
+            "x": 14,
+            "type": "metric",
+            "properties": {
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/DynamoDB", "AccountMaxReads", { "region": "us-east-1" } ],
+                    [ ".", "AccountMaxTableLevelReads", { "region": "us-east-1" } ],
+                    [ ".", "AccountMaxTableLevelWrites", { "region": "us-east-1" } ],
+                    [ ".", "AccountMaxWrites", { "region": "us-east-1" } ]
+                ],
+                "region": "us-east-1",
+                "setPeriodToTimeRange": false,
+                "stacked": false,
+                "liveData": true,
+                "singleValueFullPrecision": true,
+                "sparkline": true,
+                "title": "Máximos de Lecturas y Escrituras en DynamoDB por Cuenta y Tabla",
+                "period": 300
+            }
+        },
+        {
+            "height": 5,
+            "width": 4,
+            "y": 11,
+            "x": 13,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SQS", "SentMessageSize", "QueueName", "email-queue", { "region": "us-east-1" } ]
+                ],
+                "region": "us-east-1",
+                "stacked": false,
+                "setPeriodToTimeRange": true,
+                "title": "tamaño de los mensajes agregados a una cola",
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "start": "-PT2160H",
+                "period": 300
+            }
+        },
+        {
+            "height": 6,
+            "width": 6,
+            "y": 0,
+            "x": 18,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SQS", "NumberOfEmptyReceives", "QueueName", "email-queue" ]
+                ],
+                "region": "us-east-1",
+                "title": "número de llamadas a la API ReceiveMessage que no devolvieron un mensaje",
+                "singleValueFullPrecision": false,
+                "liveData": true
+            }
+        },
+        {
+            "height": 6,
+            "width": 5,
+            "y": 16,
+            "x": 19,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SQS", "NumberOfEmptyReceives", "QueueName", "email-queue", { "region": "us-east-1" } ],
+                    [ "AWS/S3", "BucketSizeBytes", "BucketName", "email-templates-quintana", "StorageType", "StandardStorage", { "period": 86400 } ]
+                ],
+                "region": "us-east-1",
+                "title": "Tamaño del Bucket S3: email-templates-quintana",
+                "singleValueFullPrecision": false,
+                "liveData": true,
+                "period": 300
+            }
+        },
+        {
+            "height": 6,
+            "width": 5,
+            "y": 16,
+            "x": 14,
+            "type": "metric",
+            "properties": {
+                "view": "bar",
+                "metrics": [
+                    [ "AWS/Usage", "CallCount", "Type", "API", "Resource", "GetStages", "Service", "API Gateway", "Class", "None" ],
+                    [ ".", "ResourceCount", ".", "Resource", "ResourceId", "d2db78c3-961b-4689-a241-4bf210eda063", "Resource", "AliasesPerKey", "Service", "KMS", "Class", "None" ],
+                    [ "...", "7217887f-64a5-4906-8dee-4ba670a0e1d1", ".", ".", ".", ".", ".", "." ],
+                    [ "...", "d2db78c3-961b-4689-a241-4bf210eda063", ".", "GrantsPerKey", ".", ".", ".", "." ],
+                    [ "...", "7217887f-64a5-4906-8dee-4ba670a0e1d1", ".", ".", ".", ".", ".", "." ]
+                ],
+                "region": "us-east-1",
+                "yAxis": {
+                    "left": {
+                        "showUnits": true
+                    }
+                },
+                "setPeriodToTimeRange": true,
+                "title": "Distribución de Grants y Alias por Clave en el Bucket S3"
+            }
+        },
+        {
+            "height": 6,
+            "width": 6,
+            "y": 0,
+            "x": 12,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/ApiGateway", "4XXError", "ApiName", "quintana-gateway", "Stage", "prod", { "region": "us-east-1" } ],
+                    [ ".", "5XXError", ".", ".", ".", "." ]
+                ],
+                "region": "us-east-1",
+                "title": "número de errores de cliente (códigos de estado 4xx)",
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "setPeriodToTimeRange": false,
+                "period": 300
+            }
+        },
+        {
+            "height": 5,
+            "width": 5,
+            "y": 6,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ { "expression": "FILL(METRICS(), 0)", "label": "Expresión1", "id": "e1", "stat": "SampleCount", "period": 60 } ],
+                    [ "AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", "clients", { "period": 60, "stat": "SampleCount", "id": "m1" } ]
+                ],
+                "sparkline": true,
+                "view": "singleValue",
+                "region": "us-east-1",
+                "start": "-PT2160H",
+                "stacked": false,
+                "stat": "SampleCount",
+                "period": 60,
+                "end": "P0D",
+                "setPeriodToTimeRange": false,
+                "liveData": true,
+                "singleValueFullPrecision": true,
+                "title": "antidad de unidades de capacidad de escritura consumidas."
+            }
+        },
+        {
+            "height": 5,
+            "width": 5,
+            "y": 6,
+            "x": 5,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ { "expression": "FILL(METRICS(), 0)", "label": "Expresión1", "id": "e1", "stat": "SampleCount", "period": 60, "region": "us-east-1" } ],
+                    [ "AWS/DynamoDB", "ConsumedReadCapacityUnits", "TableName", "clients", { "period": 60, "stat": "SampleCount", "id": "m1" } ]
+                ],
+                "sparkline": true,
+                "view": "singleValue",
+                "region": "us-east-1",
+                "start": "-PT2160H",
+                "stacked": false,
+                "stat": "SampleCount",
+                "period": 60,
+                "end": "P0D",
+                "setPeriodToTimeRange": false,
+                "liveData": true,
+                "singleValueFullPrecision": true,
+                "title": "cantidad de unidades de capacidad de lectura consumidas."
+            }
+        },
+        {
+            "height": 5,
+            "width": 4,
+            "y": 6,
+            "x": 10,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/Lambda", "Invocations", "FunctionName", "send-emails", "Resource", "send-emails" ],
+                    [ ".", "Duration", ".", ".", ".", "." ]
+                ],
+                "region": "us-east-1",
+                "setPeriodToTimeRange": false,
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "title": "Número de veces que se invoca la Lambda y el tiempo que toma ejecutar"
+            }
+        },
+        {
+            "height": 5,
+            "width": 5,
+            "y": 11,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/Logs", "IncomingBytes", "LogGroupName", "/aws/lambda/prepare_emails" ]
+                ],
+                "region": "us-east-1",
+                "start": "-PT2160H",
+                "title": "Número de bytes de datos recibidos en los logs.",
+                "liveData": true,
+                "singleValueFullPrecision": false
+            }
+        },
+        {
+            "height": 5,
+            "width": 5,
+            "y": 11,
+            "x": 5,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/Logs", "IncomingLogEvents" ]
+                ],
+                "region": "us-east-1",
+                "title": "Número de eventos de log ingresados.",
+                "stacked": false,
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "setPeriodToTimeRange": true
+            }
+        },
+        {
+            "height": 5,
+            "width": 3,
+            "y": 11,
+            "x": 10,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "bar",
+                "metrics": [
+                    [ "AWS/SQS", "SentMessageSize", "QueueName", "email-queue", { "region": "us-east-1" } ]
+                ],
+                "region": "us-east-1",
+                "start": "-PT2160H",
+                "title": "Tamaño de los mensajes enviados a la cola",
+                "setPeriodToTimeRange": true,
+                "liveData": true,
+                "legend": {
+                    "position": "bottom"
+                },
+                "annotations": {
+                    "horizontal": [
+                        {
+                            "visible": false,
+                            "color": "#9edae5",
+                            "label": "Anotación sin título",
+                            "value": 723.5,
+                            "fill": "below"
+                        }
+                    ]
+                },
+                "period": 300,
+                "end": "P0D"
+            }
+        },
+        {
+            "height": 5,
+            "width": 4,
+            "y": 11,
+            "x": 17,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SQS", "NumberOfMessagesSent", "QueueName", "email-queue" ]
+                ],
+                "region": "us-east-1",
+                "title": "Número total de mensajes enviados a la cola",
+                "singleValueFullPrecision": true,
+                "start": "-PT2160H",
+                "liveData": true
+            }
+        },
+        {
+            "height": 5,
+            "width": 3,
+            "y": 11,
+            "x": 21,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SQS", "NumberOfMessagesReceived", "QueueName", "email-queue" ]
+                ],
+                "region": "us-east-1",
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "setPeriodToTimeRange": true,
+                "title": "Número total de mensajes recibidos de la cola."
+            }
+        },
+        {
+            "height": 4,
+            "width": 3,
+            "y": 22,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SES", "Send" ]
+                ],
+                "region": "us-east-1",
+                "title": "Número de correos electrónicos enviados.",
+                "start": "-PT2160H",
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "setPeriodToTimeRange": true
+            }
+        },
+        {
+            "height": 4,
+            "width": 3,
+            "y": 26,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SES", "Delivery" ]
+                ],
+                "region": "us-east-1",
+                "title": "Número de correos electrónicos entregados con éxito.",
+                "singleValueFullPrecision": true,
+                "liveData": true,
+                "setPeriodToTimeRange": true
+            }
+        },
+        {
+            "height": 8,
+            "width": 13,
+            "y": 22,
+            "x": 11,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ "AWS/Usage", "ResourceCount", "Type", "Resource", "ResourceId", "d2db78c3-961b-4689-a241-4bf210eda063", "Resource", "GrantsPerKey", "Service", "KMS", "Class", "None" ],
+                    [ "...", "7217887f-64a5-4906-8dee-4ba670a0e1d1", ".", "AliasesPerKey", ".", ".", ".", "." ],
+                    [ "...", "d2db78c3-961b-4689-a241-4bf210eda063", ".", ".", ".", ".", ".", "." ],
+                    [ "...", "7217887f-64a5-4906-8dee-4ba670a0e1d1", ".", "GrantsPerKey", ".", ".", ".", "." ]
+                ],
+                "sparkline": true,
+                "view": "singleValue",
+                "region": "us-east-1",
+                "stat": "Average",
+                "period": 300,
+                "stacked": false,
+                "setPeriodToTimeRange": false,
+                "singleValueFullPrecision": true,
+                "title": "Monitoreo de Grants y Alias Asociados a las Claves KMS"
+            }
+        },
+        {
+            "height": 8,
+            "width": 4,
+            "y": 22,
+            "x": 3,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "singleValue",
+                "metrics": [
+                    [ "AWS/SQS", "NumberOfEmptyReceives", "QueueName", "email-queue" ]
+                ],
+                "region": "us-east-1",
+                "title": "Número de veces que la cola fue sondeada pero no tenía mensajes disponibles.",
+                "start": "-PT2160H"
+            }
+        },
+        {
+            "height": 8,
+            "width": 4,
+            "y": 22,
+            "x": 7,
+            "type": "metric",
+            "properties": {
+                "sparkline": false,
+                "metrics": [
+                    [ "AWS/SES", "Send", { "id": "m1", "region": "us-east-1" } ]
+                ],
+                "view": "gauge",
+                "stacked": false,
+                "region": "us-east-1",
+                "stat": "Sum",
+                "period": 3600,
+                "singleValueFullPrecision": true,
+                "setPeriodToTimeRange": true,
+                "liveData": true,
+                "title": "Send",
+                "yAxis": {
+                    "left": {
+                        "min": 1,
+                        "max": 80
+                    }
+                }
+            }
+        }
+    ]
+}

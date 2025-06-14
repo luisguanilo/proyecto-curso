@@ -1,0 +1,19 @@
+{
+  "height": 6,
+  "width": 12,
+  "y": 0,
+  "x": 0,
+  "type": "metric",
+  "properties": {
+    "metrics": [
+      [ "AWS/Lambda", "Invocations", "FunctionName", "prepare_emails", { "region": "us-east-1" } ],
+      [ ".", "Invocations", "FunctionName", "send-emails", { "region": "us-east-1" } ]
+    ],
+    "view": "timeSeries",
+    "stacked": false,
+    "region": "us-east-1",
+    "title": "📊 Comparativa: Invocaciones por Lambda (últimos 15 minutos)",
+    "period": 60,
+    "stat": "Sum"
+  }
+}
