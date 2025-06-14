@@ -23,35 +23,15 @@ NOTA: el proyecto se hizo nuevamente en un nuevo repositorio por problemas en la
 
 
 
-Luis Guanilo Esteves
-Hector reyna Gomez
-Luis Carranza Leon
-
+* Luis Guanilo Esteves
+* Hector reyna Gomez
+* Luis Carranza Leon
+------
 # **Desarrollo de Logs para el proyecto**
-##  Integración con CloudWatch
 
-Este proyecto utiliza **Amazon CloudWatch** para monitorear funciones Lambda y servicios AWS:
-
-- Logs estructurados desde `prepare_emails` y `send_emails` enviados a **CloudWatch Logs**.
-- Métricas como invocaciones, errores y duración de ejecución están disponibles automáticamente en **CloudWatch Metrics**.
-- Exportación de logs a **Amazon S3** usando `aws logs create-export-task` vía Terraform (`null_resource`).
-- Los permisos necesarios están declarados en las políticas IAM asociadas a las funciones Lambda.
-
-## Integración con CloudWatch
-
-Este proyecto utiliza **Amazon CloudWatch** como herramienta central de monitoreo y registro para los distintos componentes desplegados en AWS, integrados mediante Terraform.
 
 ### ¿Qué se monitorea?
 
-- **Funciones Lambda (`prepare_emails`, `send_emails`)**
-  - Invocaciones totales
-  - Errores en tiempo de ejecución
-  - Duración promedio por invocación
-  - Logs estructurados con formato JSON para fácil análisis
-- **Cola SQS**
-  - Métricas de mensajes visibles y en vuelo
-- **Eventos registrados automáticamente**
-  - Por API Gateway (si falla una invocación)
 
 ### Logs centralizados en CloudWatch Logs
 
@@ -82,7 +62,9 @@ resource "null_resource" "export_logs" {
   }
 }
 ```
+------
 ### Seguridad y permisos
+------
 Las funciones Lambda tienen permisos explícitos para escribir logs en CloudWatch, definidos en las políticas IAM
 ```
 actions = [
@@ -91,8 +73,9 @@ actions = [
   "logs:PutLogEvents"
 ]
 ```
+------
 ## Dashboard en CloudWatch
-
+------
 Como parte de la integración con **Amazon CloudWatch**, se creó un dashboard visual personalizado que centraliza el monitoreo del sistema:
 
 - Invocaciones y duración de funciones Lambda (`prepare_emails`, `send-emails`)
@@ -102,13 +85,13 @@ Como parte de la integración con **Amazon CloudWatch**, se creó un dashboard v
 - Envío y entrega de correos en Amazon SES
 - Volumen de logs generados en Lambda
 
- El archivo `cloudwatch/dashboard.json` contiene la configuración completa del dashboard exportado directamente desde AWS. Puede ser reutilizado para recrear el dashboard en cualquier cuenta con la misma arquitectura.
+ El archivo `cloudwatch/dashboard1.json` contiene la configuración completa del dashboard exportado directamente desde AWS. Puede ser reutilizado para recrear el dashboard en cualquier cuenta con la misma arquitectura.
 
  Todas las métricas visualizadas provienen de los servicios configurados por Terraform, y los permisos de las funciones Lambda permiten el envío de logs y generación de métricas automáticamente.
-
+------
 ###  Comparativa de Invocaciones Lambda
-
-El dashboard ahora incluye un panel informativo que muestra, en tiempo real, cuál de las funciones Lambda (`prepare_emails` vs `send-emails`) recibe más peticiones. Esto permite detectar:
+------
+El dashboard2 ahora incluye un panel informativo que muestra, en tiempo real, cuál de las funciones Lambda (`prepare_emails` vs `send-emails`) recibe más peticiones. Esto permite detectar:
 
 - Funciones más utilizadas
 - Picos de tráfico por evento
@@ -119,3 +102,75 @@ El panel utiliza datos de CloudWatch Metrics en la dimensión `AWS/Lambda > Invo
 
 
 
+---
+##  Dockerización del despliegue con Terraform
+
+Para facilitar el despliegue, se dockerizó la ejecución de Terraform dentro de un contenedor oficial, usando Docker Compose.
+
+### Requisitos previos
+
+- Docker Desktop instalado en tu máquina.
+- AWS CLI v2 instalado y configurado.
+- Perfil AWS llamado `proyecto_quintana` configurado en `~/.aws/credentials`.
+
+### Configuración importante
+
+- El archivo `docker-compose.yml` monta el directorio del proyecto dentro del contenedor.
+- También monta tus credenciales AWS locales para que Terraform pueda autenticar y desplegar recursos.
+- La variable de entorno `AWS_PROFILE` está configurada para usar `proyecto_quintana`.
+
+---
+
+### Cómo desplegar la infraestructura
+
+Desde la raíz del proyecto, ejecuta los siguientes comandos en tu terminal (PowerShell o CMD):
+
+```bash
+docker-compose run terraform  init
+docker-compose run terraform  plan
+docker-compose run terraform  apply -auto-approve
+
+docker-compose run terraform destroy
+
+
+docker-compose down
+
+```
+
+------
+## Estructura General del Proyecto
+------
+
+```
+proyecto/   
+│
+├── codes/                         
+│        ├── prepare_emails.py          
+│        ├── send_emails.py             
+│        ├── prepare_emails.zip        
+│        └── send_emails.zip            
+│
+├── templates/  
+│            ├── index.html
+│            └── styles.css
+│
+├── cloudwatch/                    
+│             └── dashboard1.json
+│             └── dashboard2.json
+├── README.md  
+├── docker-compose.yml                                 
+├── terraform.tfvars              
+├── variables.tf                 
+├── outputs.tf                   
+├── api-gateway.tf               
+├── dynamodb.tf                  
+├── emails-templates-s3-bucket.tf 
+├── logs-exports.tf              
+├── prepare-emails-lambda.tf     
+├── send-emails-lambda.tf        
+├── ses.tf                      
+├── sqs.tf                      
+└── Logs-export.tf              
+                
+```
+------
