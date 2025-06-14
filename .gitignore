@@ -1,6 +1,40 @@
-# Ignorar la carpeta .terraform
+# Terraform
 .terraform/
 .terraform.lock.hcl
-# Ignora archivos de estado
 *.tfstate
 *.tfstate.*
+crash.log
+override.tf
+override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+*.backup
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# AWS credentials (¡nunca los subas!)
+*.pem
+*.key
+*.crt
+.aws/
+
+# Python
+__pycache__/
+*.py[cod]
+*.zip
+*.egg-info/
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
+desktop.ini
