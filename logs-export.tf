@@ -57,18 +57,39 @@ resource "aws_iam_role_policy" "cloudwatch_export_policy" {
 #}
 
 
-# añadido posteriormente
+# añadido posteriormente para logs
 resource "null_resource" "export_logs" {
   provisioner "local-exec" {
-    command = <<-EOT
-      powershell -Command "\$from = [int]([System.DateTime]::UtcNow.AddHours(-1) - [System.DateTime]::UnixEpoch).TotalSeconds * 1000; 
-      \$to = [int]([System.DateTime]::UtcNow - [System.DateTime]::UnixEpoch).TotalSeconds * 1000;
-      & 'C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe' logs create-export-task --log-group-name /aws/lambda/prepare_emails --from \$from --to \$to --destination 'quintana-lambda-logs' --destination-prefix 'exported-logs/prepare' --role-arn 'arn:aws:iam::322957919239:role/cloudwatch_logs_export_role'"
-    EOT
-  }
+    environment = {
+      AWS_PROFILE = var.profile
+      AWS_REGION  = var.aws_region
+    }
 
+    interpreter = ["bash", "-c"]
+
+    command = <<EOT
+now=$(date -u +%s)
+from=$((now - 3600))
+from_ms=$((from * 1000))
+to_ms=$((now * 1000))
+
+echo "Exporting logs from $from_ms to $to_ms"
+
+aws logs create-export-task \
+  --log-group-name /aws/lambda/prepare_emails \
+  --from $from_ms \
+  --to $to_ms \
+  --destination 'quintana-lambda-logs' \
+  --destination-prefix 'exported-logs/prepare' \
+  --role-arn 'arn:aws:iam::322957919239:role/cloudwatch_logs_export_role'
+EOT
+  }
   depends_on = [
     aws_iam_role.cloudwatch_to_s3,
-    aws_s3_bucket.logs_bucket
+    aws_s3_bucket.logs_bucket,
   ]
 }
+
+
+
+
