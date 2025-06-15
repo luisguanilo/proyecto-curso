@@ -24,13 +24,10 @@ NOTA: el proyecto se hizo nuevamente en un nuevo repositorio por problemas en la
 
 
 * Luis Guanilo Esteves
-* Hector reyna Gomez
+* Hector Reyna Gomez
 * Luis Carranza Leon
 ------
 # **Desarrollo de Logs para el proyecto**
-
-
-### ¿Qué se monitorea?
 
 
 ### Logs centralizados en CloudWatch Logs
@@ -103,36 +100,51 @@ El panel utiliza datos de CloudWatch Metrics en la dimensión `AWS/Lambda > Invo
 
 
 ---
-##  Dockerización del despliegue con Terraform
+## Proyecto Terraform con Docker
 
-Para facilitar el despliegue, se dockerizó la ejecución de Terraform dentro de un contenedor oficial, usando Docker Compose.
-
-### Configuración importante
-
-- El archivo `docker-compose.yml` monta el directorio del proyecto dentro del contenedor.
-- También monta tus credenciales AWS locales para que Terraform pueda autenticar y desplegar recursos.
-- La variable de entorno `AWS_PROFILE` está configurada para usar `proyecto_quintana`.
+Este proyecto usa Docker para contenerizar Terraform y AWS CLI, facilitando la gestión de infraestructura como código sin instalar herramientas localmente.
 
 ---
 
-### Cómo desplegar la infraestructura
+## Dockerización con Terraform y AWS CLI
 
-Desde la raíz del proyecto, ejecuta los siguientes comandos en tu terminal (PowerShell o CMD):
+### Dockerfile
+
+- Base: Alpine Linux
+- Se instalan: Python3, pip, bash, curl, groff, less
+- Se instala AWS CLI via pip
+- Terraform se monta desde el host al contenedor (no está en la imagen, se ejecuta desde el volumen)
+
+---
+
+## Comandos para construir y usar el contenedor
+
+## Resumen rápido para usar Terraform con Docker
 
 ```bash
-docker-compose run terraform  init
-docker-compose run terraform  plan
-docker-compose run terraform  apply -auto-approve
+# Construir la imagen Docker con Terraform y AWS CLI
+docker-compose build terraform
 
-docker-compose run terraform destroy
+# Ingresar al contenedor con shell interactiva
+docker-compose run --rm terraform sh
 
+# Dentro del contenedor, ejecutar los comandos Terraform
+terraform init
+terraform plan
+terraform apply -auto-approve
 
-docker-compose down
+# Para destruir los recursos creados por Terraform
+terraform destroy -auto-approve
 
+# Eliminar contenedores antiguos
+docker-compose down --volumes --remove-orphans
+
+# Salir del contenedor
+exit
 ```
 
 ------
-## Estructura General del Proyecto
+##  Estructura General del Proyecto
 ------
 
 ```
@@ -152,14 +164,15 @@ proyecto/
 │             └── dashboard1.json
 │             └── dashboard2.json
 ├── README.md  
-├── docker-compose.yml                                 
+├── docker-compose.yml  
+├── dockerfile                              
 ├── terraform.tfvars              
 ├── variables.tf                 
 ├── outputs.tf                   
 ├── api-gateway.tf               
 ├── dynamodb.tf                  
 ├── emails-templates-s3-bucket.tf 
-├── logs-exports.tf              
+├── main.tf              
 ├── prepare-emails-lambda.tf     
 ├── send-emails-lambda.tf        
 ├── ses.tf                      
