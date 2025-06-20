@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'hashicorp/terraform:latest'  // Usar la imagen Docker de Terraform
-            label 'docker-agent'  // Etiqueta de agente (opcional)
+            //label 'docker-agent'  // usando agente
             args '-v /var/run/docker.sock:/var/run/docker.sock'  // Permite que Terraform use Docker dentro del contenedor
         }
     }
