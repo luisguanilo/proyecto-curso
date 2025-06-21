@@ -80,7 +80,7 @@ aws logs create-export-task \
   --from $from_ms \
   --to $to_ms \
   --destination 'quintana-lambda-logs' \
-  --destination-prefix 'exported-logs/prepare' \
+  --destination-prefix 'exported-logs/prepare' 
   
 EOT
   }
