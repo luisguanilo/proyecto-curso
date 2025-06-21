@@ -8,4 +8,6 @@ RUN apt-get update && \
     usermod -aG docker jenkins && \
     apt-get clean
 
+ENV DOCKER_HOST=tcp://host.docker.internal:2375
+
 USER jenkins
