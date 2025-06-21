@@ -81,7 +81,7 @@ aws logs create-export-task \
   --to $to_ms \
   --destination 'quintana-lambda-logs' \
   --destination-prefix 'exported-logs/prepare' \
-  --role-arn 'arn:aws:iam::322957919239:role/cloudwatch_logs_export_role'
+  
 EOT
   }
   depends_on = [
