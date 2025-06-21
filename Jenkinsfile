@@ -6,6 +6,7 @@ pipeline {
     }
 
     environment {
+        DOCKER_HOST = 'tcp://host.docker.internal:2375'
         AWS_DEFAULT_REGION = 'us-east-1'
     }
 
