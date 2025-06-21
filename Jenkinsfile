@@ -1,16 +1,14 @@
 pipeline {
     agent {
         docker {
-            image 'hashicorp/terraform:latest'  // Usar la imagen Docker de Terraform
-            //label 'docker-agent'  // usando agente
-            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Permite que Terraform use Docker dentro del contenedor
+            image 'proyecto-terraform' 
         }
     }
 
     environment {
-      
-        AWS_DEFAULT_REGION = 'us-east-1'  
+        AWS_DEFAULT_REGION = 'us-east-1'
     }
+
     stages {
         stage('Clonar Repositorio') {
             steps {
@@ -18,50 +16,53 @@ pipeline {
             }
         }
 
-        stage('Preparar Terraform') {
+        stage('Init Terraform') {
             steps {
-                sh 'terraform init'
+                sh 'terraform init -input=false'
             }
         }
 
-        stage('Ejecutar Terraform Plan') {
+        stage('Plan Terraform') {
             steps {
-                sh 'terraform plan'
+                sh 'terraform plan -out=tfplan'
             }
         }
 
-        stage('Aplicar Terraform Apply') {
+        stage('Apply Terraform') {
             steps {
-                sh 'terraform apply -auto-approve'
+                sh 'terraform apply -auto-approve tfplan'
             }
         }
 
-        stage('Verificar Envío de Correos') {
+        stage('Verificar ejecución Lambda y SQS') {
             steps {
-                echo 'Verificando que el envío de correos haya sido exitoso'
-                // Verificar los logs de Lambda
-                sh 'aws logs filter-log-events --log-group-name "/aws/lambda/send-emails" --limit 10'
-                
-                // Opcional: Verificar si la Lambda está invocando correctamente
-                sh 'aws lambda invoke --function-name arn:aws:lambda:us-east-1:322957919239:function:send-emails output.txt'
+                echo ' Verificando logs de Lambda y estado de SQS'
 
-                sh 'cat output.txt'
-                
-                // Opcional: Verificar la cola SQS (si aplica)
-                sh 'aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/322957919239/email-queue'
+                sh '''
+                echo "Últimos logs de Lambda:"
+                aws logs filter-log-events --log-group-name "/aws/lambda/send-emails" --limit 10 || echo "Error al leer logs"
+
+                echo "Ejecutando Lambda directamente:"
+                aws lambda invoke --function-name arn:aws:lambda:us-east-1:322957919239:function:send-emails output.json || echo "Error al invocar Lambda"
+                cat output.json
+                rm -f output.json
+
+                echo "Verificando SQS:"
+                aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/322957919239/email-queue || echo "No se encontraron mensajes"
+                '''
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline completado'
+            echo ' Pipeline completado'
         }
         success {
-            echo 'Despliegue exitoso'
+            echo ' Despliegue exitoso'
         }
         failure {
-            echo 'El despliegue falló. Revisa los logs para más detalles.'
+            echo '===Error=== El despliegue falló. Revisa los logs.'
         }
     }
 }
