@@ -2,9 +2,11 @@ FROM jenkins/jenkins:lts
 
 USER root
 
-# Instalar Docker CLI
+# Instalar Docker CLI y configurar grupo
 RUN apt-get update && \
     apt-get install -y docker.io && \
-    usermod -aG docker jenkins
+    groupadd -f docker && \
+    usermod -aG docker jenkins && \
+    apt-get clean
 
 USER jenkins
