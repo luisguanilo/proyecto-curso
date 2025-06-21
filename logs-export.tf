@@ -58,37 +58,37 @@ resource "aws_iam_role_policy" "cloudwatch_export_policy" {
 
 
 # añadido posteriormente para logs
-resource "null_resource" "export_logs" {
-  provisioner "local-exec" {
-    environment = {
-      AWS_PROFILE = var.profile
-      AWS_REGION  = var.aws_region
-    }
+#resource "null_resource" "export_logs" {
+#  provisioner "local-exec" {
+#    environment = {
+#      AWS_PROFILE = var.profile
+#      AWS_REGION  = var.aws_region
+#    }#
 
-    interpreter = ["bash", "-c"]
+#    interpreter = ["bash", "-c"]
 
-    command = <<EOT
-now=$(date -u +%s)
-from=$((now - 3600))
-from_ms=$((from * 1000))
-to_ms=$((now * 1000))
+ #   command = <<EOT
+#now=$(date -u +%s)
+#from=$((now - 3600))
+#from_ms=$((from * 1000))
+#to_ms=$((now * 1000))
 
-echo "Exporting logs from $from_ms to $to_ms"
+#echo "Exporting logs from $from_ms to $to_ms"
 
-aws logs create-export-task \
-  --log-group-name /aws/lambda/prepare_emails \
-  --from $from_ms \
-  --to $to_ms \
-  --destination 'quintana-lambda-logs' \
-  --destination-prefix 'exported-logs/prepare' 
+#aws logs create-export-task \
+#  --log-group-name /aws/lambda/prepare_emails \
+#  --from $from_ms \
+#  --to $to_ms \
+#  --destination 'quintana-lambda-logs' \
+#  --destination-prefix 'exported-logs/prepare' 
   
-EOT
-  }
-  depends_on = [
-    aws_iam_role.cloudwatch_to_s3,
-    aws_s3_bucket.logs_bucket,
-  ]
-}
+#EOT
+#  }
+#  depends_on = [
+#    aws_iam_role.cloudwatch_to_s3,
+#    aws_s3_bucket.logs_bucket,
+#  ]
+#}
 
 
 
