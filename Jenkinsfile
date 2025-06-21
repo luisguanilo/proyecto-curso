@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Clonar Repositorio') {
             steps {
-                git 'https://github.com/luisguanilo/proyecto-curso.git'
+                git branch: 'main', url: 'https://github.com/luisguanilo/proyecto-curso.git'
             }
         }
 
