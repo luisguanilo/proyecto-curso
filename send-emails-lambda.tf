@@ -85,6 +85,8 @@ resource "aws_lambda_function" "send_emails" {
   }
 }
 
+
+# Recurso para Balanceo de trabajo en el envio de archivos, con un lote de envio de 10, activado
 resource "aws_lambda_event_source_mapping" "sqs_trigger" {
   event_source_arn = aws_sqs_queue.email_queue.arn
   function_name    = aws_lambda_function.send_emails.arn
