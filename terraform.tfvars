@@ -5,5 +5,5 @@ clients_table_name    = "clients"
 sender_email          = "guanilo99@gmail.com"
 sqs_queue_name        = "email-queue"
 ####
-waf_web_acl_arn       = ""
+#waf_web_acl_arn       = ""
 ####

@@ -226,7 +226,7 @@ resource "aws_api_gateway_stage" "prod" {
   }
   # checkov:skip=CKV2_AWS_29:Ensure public API gateway are protected by WAF 
   # checkov:skip=CKV2_AWS_51:Ensure AWS API Gateway endpoints uses client certificate authentication 
-  web_acl_arn = var.waf_web_acl_arn 
+  #web_acl_arn = var.waf_web_acl_arn 
   ##############################
 }
 
