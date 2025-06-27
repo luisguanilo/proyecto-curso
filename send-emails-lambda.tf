@@ -133,7 +133,7 @@ resource "aws_lambda_function" "send_emails" {
   reserved_concurrent_executions = 5
 
   # CKV_AWS_272: Code signing configurado
-  code_signing_config_arn = aws_lambda_code_signing_config.sign_send.arn
+  #code_signing_config_arn = aws_lambda_code_signing_config.sign_send.arn
 
   # CKV_AWS_173: Cifrado de variables de entorno
   kms_key_arn = aws_kms_key.lambda_env_send.arn
