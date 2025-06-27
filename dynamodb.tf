@@ -21,14 +21,14 @@ resource "aws_dynamodb_table" "clients" {
 
   server_side_encryption {
     enabled = true
-    kms_key_arn = aws_kms_key.mykey.arn  # Referencia a la clave KMS
+    #kms_key_arn = aws_kms_key.mykey.arn  # Referencia a la clave KMS
   }
 }
 # CKV_AWS_119: Usar CMK de Cliente para Encriptación
 ####
-resource "aws_kms_key" "mykey" {
-  description = "My KMS key for DynamoDB encryption"
-}
+#resource "aws_kms_key" "mykey" {
+#  description = "My KMS key for DynamoDB encryption"
+#}
 ####
 
 
