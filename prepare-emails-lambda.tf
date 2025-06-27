@@ -93,10 +93,10 @@ resource "aws_sqs_queue" "lambda_dlq" {
 ############################
 # KMS Key for Lambda Envs
 ############################
-resource "aws_kms_key" "lambda_env" {
-  description             = "CMK para cifrar variables de entorno de prepare_emails"
-  deletion_window_in_days = 30
-}
+#resource "aws_kms_key" "lambda_env" {
+#  description             = "CMK para cifrar variables de entorno de prepare_emails"
+#  deletion_window_in_days = 30
+#}
 
 
 

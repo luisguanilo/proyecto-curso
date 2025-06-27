@@ -83,10 +83,10 @@ resource "aws_sqs_queue" "send_emails_dlq" {
 # KMS Key for Lambda Envs
 ############################
 # (Reutiliza la misma CMK o crea una distinta si prefieres)
-resource "aws_kms_key" "lambda_env_send" {
-  description             = "CMK para cifrar variables de entorno de send_emails"
-  deletion_window_in_days = 30
-}
+#resource "aws_kms_key" "lambda_env_send" {
+#  description             = "CMK para cifrar variables de entorno de send_emails"
+#  deletion_window_in_days = 30
+#}
 
 ###################################
 # Code Signing Configuration
