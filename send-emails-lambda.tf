@@ -75,7 +75,7 @@ resource "aws_iam_role_policy" "lambda_send_emails_policy_attach" {
 # Dead-Letter Queue (DLQ)
 ###########################
 resource "aws_sqs_queue" "send_emails_dlq" {
-  name              = "${aws_lambda_function.send_emails.function_name}-dlq"
+  name              = "send-emails-dlq"
   kms_master_key_id = aws_kms_key.sqs.arn
 }
 
