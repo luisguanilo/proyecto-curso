@@ -5,7 +5,7 @@ resource "aws_sqs_queue" "email_queue" {
   max_message_size             = 51200
   delay_seconds                = 0
   # CKV_AWS_27	Cola SQS no encriptada
-  kms_master_key_id           = aws_kms_key.sqs.arn
+  #kms_master_key_id           = aws_kms_key.sqs.arn
   #
 }
 ####
