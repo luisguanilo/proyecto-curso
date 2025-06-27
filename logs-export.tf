@@ -1,11 +1,66 @@
+
+# checkov:skip=CKV_AWS_144 "No es necesario replicación entre regiones para el proyecto"
+# checkov:skip=CKV_AWS_145 "No se utiliza KMS para la encriptación en el proyecto"
+
 resource "aws_s3_bucket" "logs_bucket" {
   bucket        = "quintana-lambda-logs"
   force_destroy = true
-
+  
   tags = {
     Purpose = "Lambda Logs Export"
+  }  
+
+}
+
+
+#CKV_AWS_18
+resource "aws_s3_bucket_logging" "logs_bucket_logging" {
+  bucket = aws_s3_bucket.logs_bucket.id
+
+  # Configura el bucket de destino para los logs
+  target_bucket = aws_s3_bucket.logs_bucket.id
+  target_prefix = "access-logs/"
+}
+
+#CKV2_AWS_62
+resource "aws_s3_bucket_notification" "logs_notification" {
+  bucket = aws_s3_bucket.logs_bucket.id
+
+  lambda_function {
+    events              = ["s3:ObjectCreated:*"]  # Este evento se activa cuando se crea un objeto
+    lambda_function_arn = aws_lambda_function.on_new_log.arn  # ARN de la función Lambda que manejará la notificación
   }
 }
+
+#CKV_AWS_145
+
+
+#CKV_AWS_21
+resource "aws_s3_bucket_versioning" "logs_bucket_versioning" {
+  bucket = aws_s3_bucket.logs_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+#CKV2_AWS_61
+resource "aws_s3_bucket_lifecycle_configuration" "logs_lifecycle" {
+  bucket = aws_s3_bucket.logs_bucket.id
+
+  rule {
+    id     = "expire-logs"
+    status = "Enabled"
+
+    expiration {
+      days = 90
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
+}
+
+
 
 resource "aws_s3_bucket_public_access_block" "logs_block" {
   bucket = aws_s3_bucket.logs_bucket.id
@@ -21,7 +76,7 @@ resource "aws_iam_role" "cloudwatch_to_s3" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [{
+    Statement = [ {
       Effect = "Allow",
       Principal = {
         Service = "logs.${var.aws_region}.amazonaws.com"
@@ -46,6 +101,7 @@ resource "aws_iam_role_policy" "cloudwatch_export_policy" {
     }]
   })
 }
+
 
 # añadido para exportar los logs al s3
 #resource "null_resource" "export_logs" {

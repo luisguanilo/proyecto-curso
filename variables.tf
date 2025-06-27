@@ -27,3 +27,22 @@ variable "sqs_queue_name" {
   description = "SQS Queue Name"
   default     = "email-queue"
 }
+
+
+#######################
+# AÑADE ESTA NUEVA VARIABLE
+variable "waf_web_acl_arn" {
+  description = "ARN of the WAF Web ACL to associate with the API Gateway stage. Defaults to empty if no WAF is used."
+  type        = string
+  default     = "" # Añade este default aquí
+}
+
+variable "private_subnet_ids" {
+  description = "Lista de subnets privadas donde se desplegará la Lambda"
+  type        = list(string)
+}
+
+variable "lambda_security_group_ids" {
+  description = "Lista de Security Group IDs asignados a la Lambda"
+  type        = list(string)
+}

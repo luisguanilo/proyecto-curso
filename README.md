@@ -206,3 +206,16 @@ proyecto/
 
 
 Se instalo Checkov, y se realizo un escaneo del codigo y los resultados estan dentro del archivo resultado_checkov.txt
+
+- Se crea una nueva rama de trabajo para realizar el levantanmiento de las observaciones interpuestas por el escaneo de checkov.
+```
+git checkout -b feature/observaciones
+```
+
+
+
+
+
+
+
+
