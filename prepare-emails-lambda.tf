@@ -134,7 +134,7 @@ resource "aws_lambda_function" "prepare_emails" {
   #code_signing_config_arn = aws_lambda_code_signing_config.sign.arn
 
   # CKV_AWS_173: Check encryption settings for Lambda environmental variable
-    kms_key_arn = aws_kms_key.lambda_env.arn
+    #kms_key_arn = aws_kms_key.lambda_env.arn
 
 
 

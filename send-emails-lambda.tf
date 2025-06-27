@@ -136,7 +136,7 @@ resource "aws_lambda_function" "send_emails" {
   #code_signing_config_arn = aws_lambda_code_signing_config.sign_send.arn
 
   # CKV_AWS_173: Cifrado de variables de entorno
-  kms_key_arn = aws_kms_key.lambda_env_send.arn
+  #kms_key_arn = aws_kms_key.lambda_env_send.arn
 
   ################
 
