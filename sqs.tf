@@ -9,8 +9,8 @@ resource "aws_sqs_queue" "email_queue" {
   #
 }
 ####
-resource "aws_kms_key" "sqs" {
-  description             = "CMK para cifrar la cola SQS email_queue"
-  deletion_window_in_days = 30
-}
+#resource "aws_kms_key" "sqs" {
+#  description             = "CMK para cifrar la cola SQS email_queue"
+#  deletion_window_in_days = 30
+#}
 ####
