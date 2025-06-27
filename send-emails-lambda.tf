@@ -99,10 +99,7 @@ resource "aws_lambda_code_signing_config" "sign_send" {
   }
 }
 
-####################
-# Caller Identity
-####################
-data "aws_caller_identity" "current" {}
+
 
 
 
