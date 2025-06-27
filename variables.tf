@@ -37,12 +37,14 @@ variable "waf_web_acl_arn" {
   default     = "" # Añade este default aquí
 }
 
-variable "private_subnet_ids" {
-  description = "Lista de subnets privadas donde se desplegará la Lambda"
-  type        = list(string)
-}
-
 variable "lambda_security_group_ids" {
   description = "Lista de Security Group IDs asignados a la Lambda"
   type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_ids" {
+  description = "Lista de subnets privadas donde se desplegará la Lambda"
+  type        = list(string)
+  default     = []
 }
