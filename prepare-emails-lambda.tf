@@ -87,7 +87,7 @@ resource "aws_iam_role_policy" "lambda_prepare_emails_policy_attach" {
 ###########################
 resource "aws_sqs_queue" "lambda_dlq" {
   name              = "prepare-emails-dlq"
-  kms_master_key_id = aws_kms_key.sqs.arn
+  #kms_master_key_id = aws_kms_key.sqs.arn
 }
 
 ############################
