@@ -98,18 +98,6 @@ resource "aws_kms_key" "lambda_env" {
   deletion_window_in_days = 30
 }
 
-###################################
-# Code Signing Configuration
-###################################
-resource "aws_lambda_code_signing_config" "sign" {
-  allowed_publishers {
-    signing_profile_version_arns = [
-      aws_signer_signing_profile.profile.arn
-    ]
-  }
-}
-
-
 
 
 # checkov:skip=CKV_AWS_117 "Lambda no desplegada en VPC"

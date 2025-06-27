@@ -26,10 +26,10 @@ resource "aws_s3_bucket_logging" "logs_bucket_logging" {
 resource "aws_s3_bucket_notification" "logs_notification" {
   bucket = aws_s3_bucket.logs_bucket.id
 
-  lambda_function {
-    events              = ["s3:ObjectCreated:*"]  # Este evento se activa cuando se crea un objeto
-    lambda_function_arn = aws_lambda_function.on_new_log.arn  # ARN de la función Lambda que manejará la notificación
-  }
+  #lambda_function {
+   # events              = ["s3:ObjectCreated:*"]  # Este evento se activa cuando se crea un objeto
+    #lambda_function_arn = aws_lambda_function.on_new_log.arn  # ARN de la función Lambda que manejará la notificación
+  #}
 }
 
 #CKV_AWS_145
@@ -47,15 +47,19 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs_lifecycle" {
   bucket = aws_s3_bucket.logs_bucket.id
 
   rule {
-    id     = "expire-logs"
-    status = "Enabled"
+  id     = "expire-logs"
+  status = "Enabled"
 
-    expiration {
-      days = 90
-    }
+  filter {
+    prefix = ""
+  }
 
-    noncurrent_version_expiration {
-      noncurrent_days = 30
+  expiration {
+    days = 90
+  }
+
+  noncurrent_version_expiration {
+    noncurrent_days = 30
     }
   }
 }

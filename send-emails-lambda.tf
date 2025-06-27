@@ -91,13 +91,13 @@ resource "aws_kms_key" "lambda_env_send" {
 ###################################
 # Code Signing Configuration
 ###################################
-resource "aws_lambda_code_signing_config" "sign_send" {
-  allowed_publishers {
-    signing_profile_version_arns = [
-      aws_signer_signing_profile.profile.arn
-    ]
-  }
-}
+#resource "aws_lambda_code_signing_config" "sign_send" {
+#  allowed_publishers {
+#    signing_profile_version_arns = [
+#      aws_signer_signing_profile.profile.arn
+#    ]
+#  }
+#}
 
 
 
