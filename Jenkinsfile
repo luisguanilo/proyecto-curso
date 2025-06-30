@@ -35,32 +35,32 @@ pipeline {
 
         // --- Nuevo stage para escaneo de seguridad con Checkov ---
         stage('Security Scan – Checkov') {
-            steps {
-                dir('infra') {
-                    sh '''
-                      # Instala Checkov localmente si no está disponible
-                      if ! command -v checkov >/dev/null; then
-                        pip install --user checkov
-                        export PATH=$HOME/.local/bin:$PATH
-                      fi
+    steps {
+        dir('infra') {
+            sh '''
+              # 1) Instala Checkov en ./checkov_lib sin usar ~/.local
+              if [ ! -d "../../checkov_lib" ]; then
+                pip install --no-cache-dir checkov --target ../../checkov_lib
+              fi
 
-                      echo " Ejecutando Checkov en infra/…"
-                      checkov -d . \
-                             --framework terraform \
-                             --compact \
-                             --soft-fail \
-                             --output junitxml \
-                             --output-file checkov-results.xml
-                    '''
-                }
-            }
-            post {
-                always {
-                    // Publica el reporte JUnit en Jenkins
-                    junit allowEmptyResults: true, testResults: 'infra/checkov-results.xml'
-                }
-            }
+              # 2) Ejecuta Checkov vía módulo de Python, generando JUnit
+              echo " Ejecutando Checkov en infra/…"
+              python3 -m checkov.main -d . \
+                   --framework terraform \
+                   --compact \
+                   --soft-fail \
+                   --output junitxml \
+                   --output-file checkov-results.xml \
+                   --external-checks-dir ../../checkov_lib
+            '''
         }
+    }
+    post {
+        always {
+            junit allowEmptyResults: true, testResults: 'infra/checkov-results.xml'
+        }
+    }
+}
 
         // --- aqui termina el stage del escaneo checkov
 
