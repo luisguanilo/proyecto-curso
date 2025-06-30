@@ -54,24 +54,24 @@ pipeline {
                             --framework terraform \
                             --compact \
                             --soft-fail \
-                            --output html \
-                            --output-file checkov-report.html \
+                            --output json \
+                            --output-file checkov-report.json \
                             --output junitxml \
                             --output-file checkov-results.xml
 
-                        # 4) Desactiva el virtualenv (opcional)
+                        # 4) Desactiva el virtualenv 
                         deactivate || true
                     '''
                   }
                 }
                 post {
                     always {
-                        // 1) Publicar el XML en “Tests”
+                        // 1) Publicar el Junit en “Tests”
                         dir('infra') {
                             junit allowEmptyResults: true, testResults: 'checkov-results.xml'
                         }
-                        // 2) Archivar el HTML para descarga desde Artifacts
-                        archiveArtifacts artifacts: 'infra/checkov-report.html', fingerprint: true
+                        // 2) Archivar el json para descarga desde Artifacts
+                        archiveArtifacts artifacts: 'infra/checkov-report.json', fingerprint: true
                     }
                 }
         }
