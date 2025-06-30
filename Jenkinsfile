@@ -54,6 +54,8 @@ pipeline {
                             --framework terraform \
                             --compact \
                             --soft-fail \
+                            --output html \
+                            --output-file checkov-report.html \
                             --output junitxml \
                             --output-file checkov-results.xml
 
