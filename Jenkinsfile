@@ -110,7 +110,7 @@ pipeline {
         stage('Esperar 5 minutos') {
             steps {
                 echo 'Esperando 5 minutos antes de continuar con el destroy...'
-                sleep time: 2, unit: 'MINUTES'
+                sleep time: 20, unit: 'MINUTES'
             }
         }
 
