@@ -64,12 +64,14 @@ pipeline {
                 }
                 post {
                     always {
-                        // Publica el reporte JUnit en Jenkins
+                        // 1) Publicar el XML en “Tests”
                         dir('infra') {
                             junit allowEmptyResults: true, testResults: 'checkov-results.xml'
                         }
+                        // 2) Archivar el HTML para descarga desde Artifacts
+                        archiveArtifacts artifacts: 'infra/checkov-report.html', fingerprint: true
+                    }
                 }
-            }
         }
 
         // --- aqui termina el stage del escaneo checkov
