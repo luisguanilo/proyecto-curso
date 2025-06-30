@@ -33,6 +33,39 @@ pipeline {
             }
         }
 
+        // --- Nuevo stage para escaneo de seguridad con Checkov ---
+        stage('Security Scan – Checkov') {
+            agent {
+                docker {
+                    image 'bridgecrew/checkov:latest'
+                    args  '-v $WORKSPACE:/workspace'
+                }
+            }
+            steps {
+                dir('.') {
+                    sh '''
+                      echo "🔍 Ejecutando Checkov en todo el proyecto Terraform…"
+                      checkov -d infra \
+                             --framework terraform \
+                             --compact \
+                             --soft-fail \
+                             --output junitxml \
+                             --output-file checkov-results.xml
+                    '''
+                }
+            }
+            post {
+                always {
+                    // Publica el reporte JUnit en Jenkins
+                    junit allowEmptyResults: true, testResults: 'checkov-results.xml'
+                }
+            }
+        }
+
+        // --- aqui termina el stage del escaneo checkov
+
+
+
         stage('Apply Terraform') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
