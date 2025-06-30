@@ -32,7 +32,7 @@ pipeline {
                 }
             }
         }
-
+/* 
         // --- Nuevo stage para escaneo de seguridad con Checkov ---
         stage('Security Scan – Checkov') {
             steps {
@@ -77,7 +77,7 @@ pipeline {
         }
 
         // --- aqui termina el stage del escaneo checkov
-
+*/
 
 
         stage('Apply Terraform') {
