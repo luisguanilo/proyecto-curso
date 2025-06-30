@@ -35,17 +35,17 @@ pipeline {
 
         // --- Nuevo stage para escaneo de seguridad con Checkov ---
         stage('Security Scan – Checkov') {
-            agent {
-                docker {
-                    image 'bridgecrew/checkov:latest'
-                    args  '-v $WORKSPACE:/workspace'
-                }
-            }
             steps {
-                dir('.') {
+                dir('infra') {
                     sh '''
-                      echo "🔍 Ejecutando Checkov en todo el proyecto Terraform…"
-                      checkov -d infra \
+                      # Instala Checkov localmente si no está disponible
+                      if ! command -v checkov >/dev/null; then
+                        pip install --user checkov
+                        export PATH=$HOME/.local/bin:$PATH
+                      fi
+
+                      echo " Ejecutando Checkov en infra/…"
+                      checkov -d . \
                              --framework terraform \
                              --compact \
                              --soft-fail \
@@ -57,7 +57,7 @@ pipeline {
             post {
                 always {
                     // Publica el reporte JUnit en Jenkins
-                    junit allowEmptyResults: true, testResults: 'checkov-results.xml'
+                    junit allowEmptyResults: true, testResults: 'infra/checkov-results.xml'
                 }
             }
         }
