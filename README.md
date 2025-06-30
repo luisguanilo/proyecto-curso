@@ -206,3 +206,7 @@ proyecto/
 
 
 Se instalo Checkov, y se realizo un escaneo del codigo y los resultados estan dentro del archivo resultado_checkov.txt
+
+docker-compose up -d
+
+docker-compose down

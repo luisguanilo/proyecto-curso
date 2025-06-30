@@ -35,32 +35,40 @@ pipeline {
 
         // --- Nuevo stage para escaneo de seguridad con Checkov ---
         stage('Security Scan – Checkov') {
-    steps {
-        dir('infra') {
-            sh '''
-              # 1) Instala Checkov en ./checkov_lib sin usar ~/.local
-              if [ ! -d "../../checkov_lib" ]; then
-                pip install --no-cache-dir checkov --target ../../checkov_lib
-              fi
+            steps {
+                    dir('infra') {
+                    sh '''
+                    # 1) Crea (o reutiliza) un virtualenv en la raíz del workspace
+                    if [ ! -d "../venv" ]; then
+                        python3 -m venv ../venv
+                    fi
 
-              # 2) Ejecuta Checkov vía módulo de Python, generando JUnit
-              echo " Ejecutando Checkov en infra/…"
-              python3 -m checkov.main -d . \
-                   --framework terraform \
-                   --compact \
-                   --soft-fail \
-                   --output junitxml \
-                   --output-file checkov-results.xml \
-                   --external-checks-dir ../../checkov_lib
-            '''
+                    # 2) Activa el virtualenv e instala Checkov
+                    . ../venv/bin/activate
+                    pip install --upgrade pip
+                    pip install checkov
+
+                    # 3) Ejecuta el escaneo
+                    echo " Ejecutando Checkov en infra/…"
+                    checkov -d . \
+                     --framework terraform \
+                     --compact \
+                     --soft-fail \
+                     --output junitxml \
+                     --output-file checkov-results.xml
+
+                    # 4) Desactiva el virtualenv (opcional)
+                    deactivate || true
+                    '''
+                  }
+                }
+                post {
+                    always {
+                    // Publica el reporte JUnit en Jenkins
+                    junit allowEmptyResults: true, testResults: 'infra/checkov-results.xml'
+                }
+            }
         }
-    }
-    post {
-        always {
-            junit allowEmptyResults: true, testResults: 'infra/checkov-results.xml'
-        }
-    }
-}
 
         // --- aqui termina el stage del escaneo checkov
 
