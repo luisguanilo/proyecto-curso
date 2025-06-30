@@ -37,35 +37,37 @@ pipeline {
         stage('Security Scan – Checkov') {
             steps {
                     dir('infra') {
-                    sh '''
-                    # 1) Crea (o reutiliza) un virtualenv en la raíz del workspace
-                    if [ ! -d "../venv" ]; then
-                        python3 -m venv ../venv
-                    fi
+                        sh '''
+                         # 1) Crea (o reutiliza) un virtualenv en la raíz del workspace
+                        if [ ! -d "../venv" ]; then
+                            python3 -m venv ../venv
+                        fi
 
-                    # 2) Activa el virtualenv e instala Checkov
-                    . ../venv/bin/activate
-                    pip install --upgrade pip
-                    pip install checkov
+                        # 2) Activa el virtualenv e instala Checkov
+                        . ../venv/bin/activate
+                        pip install --upgrade pip
+                        pip install checkov
 
-                    # 3) Ejecuta el escaneo
-                    echo " Ejecutando Checkov en infra/…"
-                    checkov -d . \
-                     --framework terraform \
-                     --compact \
-                     --soft-fail \
-                     --output junitxml \
-                     --output-file checkov-results.xml
+                        # 3) Ejecuta el escaneo
+                        echo " Ejecutando Checkov en infra/…"
+                        checkov -d . \
+                            --framework terraform \
+                            --compact \
+                            --soft-fail \
+                            --output junitxml \
+                            --output-file checkov-results.xml
 
-                    # 4) Desactiva el virtualenv (opcional)
-                    deactivate || true
+                        # 4) Desactiva el virtualenv (opcional)
+                        deactivate || true
                     '''
                   }
                 }
                 post {
                     always {
-                    // Publica el reporte JUnit en Jenkins
-                    junit allowEmptyResults: true, testResults: 'infra/checkov-results.xml'
+                        // Publica el reporte JUnit en Jenkins
+                        dir('infra') {
+                            junit allowEmptyResults: true, testResults: 'checkov-results.xml'
+                        }
                 }
             }
         }
