@@ -32,7 +32,7 @@ pipeline {
                 }
             }
         }
-/* 
+
         // --- Nuevo stage para escaneo de seguridad con Checkov ---
         stage('Security Scan – Checkov') {
             steps {
@@ -55,29 +55,18 @@ pipeline {
                             --compact \
                             --soft-fail \
                             --output json \
-                            --output-file checkov-report.json \
-                            --output junitxml \
-                            --output-file checkov-results.xml
-
-                        # 4) Desactiva el virtualenv 
+                         # 4) Desactiva el virtualenv 
                         deactivate || true
                     '''
                   }
                 }
                 post {
-                    always {
-                        // 1) Publicar el Junit en “Tests”
-                        dir('infra') {
-                            junit allowEmptyResults: true, testResults: 'checkov-results.xml'
-                        }
-                        // 2) Archivar el json para descarga desde Artifacts
-                        archiveArtifacts artifacts: 'infra/checkov-report.json', fingerprint: true
+                    
                     }
                 }
         }
 
         // --- aqui termina el stage del escaneo checkov
-*/
 
 
         stage('Apply Terraform') {
