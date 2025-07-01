@@ -59,11 +59,9 @@ pipeline {
                         deactivate || true
                     '''
                   }
+                
                 }
-                post {
-                    
-                    }
-                }
+            }
         
 
         // --- aqui termina el stage del escaneo checkov
