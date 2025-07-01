@@ -64,7 +64,7 @@ pipeline {
                     
                     }
                 }
-        }
+        
 
         // --- aqui termina el stage del escaneo checkov
 
